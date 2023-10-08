@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import logo from "../noImg.png";
+//import logo from "../noImg.png";
 import axios from "axios";
 import { CHAINS_CONFIG } from "../chains";
 import { ethers } from "ethers";
@@ -48,7 +48,7 @@ function ViewWalletPage({
                 renderItem={(item, index) => (
                   <List.Item style={{ textAlign: "left" }}>
                     <List.Item.Meta
-                      avatar={<Avatar src={item.logo || logo} />}
+                      avatar={<Avatar src={item.logo || null} />}
                       title={item.symbol}
                       description={item.name}
                     />
@@ -256,5 +256,27 @@ function ViewWalletPage({
     setBalance(0);
     getAccountTokens();
   }, [selectedChain]);
+
+  return (
+    <>
+      <div className="content">
+        <div className="logoutButton" onClick={logout}>
+          <LogoutOutlined />
+        </div>
+        <div className="walletName">Wallet</div>
+        <Tooltip title={wallet}>
+          <div>
+            {wallet.slice(0, 4)}...{wallet.slice(38)}
+          </div>
+        </Tooltip>
+        <Divider />
+        {fetching ? (
+          <Spin />
+        ) : (
+          <Tabs defaultActiveKey="1" items={items} className="walletView" />
+        )}
+      </div>
+    </>
+  );
 }
 export default ViewWalletPage;
