@@ -16,5 +16,156 @@ import axios from "axios";
 import { CHAINS_CONFIG } from "../chains";
 import { ethers } from "ethers";
 
-function ViewWalletPage() {}
+function ViewWalletPage({
+  wallet,
+  setWallet,
+  seedPhrase,
+  setSeedPhrase,
+  selectedChain,
+}) {
+  const navigate = useNavigate();
+  const [tokens, setTokens] = useState(null);
+  const [nfts, setNfts] = useState(null);
+  const [balance, setBalance] = useState(0);
+  const [fetching, setFetching] = useState(true);
+  const [amountToSend, setAmountToSend] = useState(null);
+  const [sendToAddress, setSendToAddress] = useState(null);
+  const [processing, setProcessing] = useState(false);
+  const [hash, setHash] = useState(null);
+
+  const items = [
+    {
+      key: "3",
+      label: `Tokens`,
+      children: (
+        <>
+          {tokens ? (
+            <>
+              <List
+                bordered
+                itemLayout="horizontal"
+                dataSource={tokens}
+                renderItem={(item, index) => (
+                  <List.Item style={{ textAlign: "left" }}>
+                    <List.Item.Meta
+                      avatar={<Avatar src={item.logo || logo} />}
+                      title={item.symbol}
+                      description={item.name}
+                    />
+                    <div>
+                      {(
+                        Number(item.balance) /
+                        10 ** Number(item.decimals)
+                      ).toFixed(2)}{" "}
+                      Tokens
+                    </div>
+                  </List.Item>
+                )}
+              />
+            </>
+          ) : (
+            <>
+              <span>You seem to not have any tokens yet</span>
+              <p className="frontPageBottom">
+                Find Alt Coin Gems:{" "}
+                <a
+                  href="https://moralismoney.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  money.moralis.io
+                </a>
+              </p>
+            </>
+          )}
+        </>
+      ),
+    },
+    {
+      key: "2",
+      label: `NFTs`,
+      children: (
+        <>
+          {nfts ? (
+            <>
+              {nfts.map((e, i) => {
+                return (
+                  <>
+                    {e && (
+                      <img
+                        key={i}
+                        className="nftImage"
+                        alt="nftImage"
+                        src={e}
+                      />
+                    )}
+                  </>
+                );
+              })}
+            </>
+          ) : (
+            <>
+              <span>You seem to not have any NFTs yet</span>
+              <p className="frontPageBottom">
+                Find Alt Coin Gems:{" "}
+                <a
+                  href="https://moralismoney.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  money.moralis.io
+                </a>
+              </p>
+            </>
+          )}
+        </>
+      ),
+    },
+    {
+      key: "1",
+      label: `Transfer`,
+      children: (
+        <>
+          <h3>Native Balance </h3>
+          <h1>
+            {balance.toFixed(2)} {CHAINS_CONFIG[selectedChain].ticker}
+          </h1>
+          <div className="sendRow">
+            <p style={{ width: "90px", textAlign: "left" }}> To:</p>
+            <Input
+              value={sendToAddress}
+              onChange={(e) => setSendToAddress(e.target.value)}
+              placeholder="0x..."
+            />
+          </div>
+          <div className="sendRow">
+            <p style={{ width: "90px", textAlign: "left" }}> Amount:</p>
+            <Input
+              value={amountToSend}
+              onChange={(e) => setAmountToSend(e.target.value)}
+              placeholder="Native tokens you wish to send..."
+            />
+          </div>
+          <Button
+            style={{ width: "100%", marginTop: "20px", marginBottom: "20px" }}
+            type="primary"
+            onClick={() => sendTransaction(sendToAddress, amountToSend)}
+          >
+            Send Tokens
+          </Button>
+          {processing && (
+            <>
+              <Spin />
+              {hash && (
+                <Tooltip title={hash}>
+                  <p>Hover For Tx Hash</p>
+                </Tooltip>
+              )}
+            </>
+          )}
+        </>
+      ),
+    },
+  ];
+}
 export default ViewWalletPage;
