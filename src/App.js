@@ -11,7 +11,7 @@ import ViewWalletPage from "./components/ViewWalletPage";
 function App() {
   const [wallet, setWallet] = useState(null);
   const [seedPhrase, setSeedPhrase] = useState(null);
-  const [selectedChain, setSelectedChain] = useState("0x1");
+  const [selectedChain, setSelectedChain] = useState("Select Network");
 
   return (
     <div className="App">
