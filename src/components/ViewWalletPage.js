@@ -206,5 +206,55 @@ function ViewWalletPage({
       setSendToAddress(null);
     }
   }
+
+  async function getAccountTokens() {
+    setFetching(true);
+
+    const res = await axios.get(`http://localhost:3001/getTokens`, {
+      params: {
+        userAddress: wallet,
+        chain: selectedChain,
+      },
+    });
+
+    const response = res.data;
+
+    if (response.tokens.length > 0) {
+      setTokens(response.tokens);
+    }
+
+    if (response.nfts.length > 0) {
+      setNfts(response.nfts);
+    }
+
+    setBalance(response.balance);
+
+    setFetching(false);
+  }
+
+  function logout() {
+    setSeedPhrase(null);
+    setWallet(null);
+    setNfts(null);
+    setTokens(null);
+    setBalance(0);
+    navigate("/");
+  }
+
+  useEffect(() => {
+    if (!wallet || !selectedChain) return;
+    setNfts(null);
+    setTokens(null);
+    setBalance(0);
+    getAccountTokens();
+  }, []);
+
+  useEffect(() => {
+    if (!wallet) return;
+    setNfts(null);
+    setTokens(null);
+    setBalance(0);
+    getAccountTokens();
+  }, [selectedChain]);
 }
 export default ViewWalletPage;
