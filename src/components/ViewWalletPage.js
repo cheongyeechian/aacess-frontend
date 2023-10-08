@@ -167,5 +167,44 @@ function ViewWalletPage({
       ),
     },
   ];
+
+  async function sendTransaction(to, amount) {
+    const chain = CHAINS_CONFIG[selectedChain];
+
+    const provider = new ethers.JsonRpcProvider(chain.rpcUrl);
+
+    const privateKey = ethers.Wallet.fromPhrase(seedPhrase).privateKey;
+
+    const wallet = new ethers.Wallet(privateKey, provider);
+
+    const tx = {
+      to: to,
+      value: ethers.parseEther(amount.toString()),
+    };
+
+    setProcessing(true);
+    try {
+      const transaction = await wallet.sendTransaction(tx);
+
+      setHash(transaction.hash);
+      const receipt = await transaction.wait();
+
+      setHash(null);
+      setProcessing(false);
+      setAmountToSend(null);
+      setSendToAddress(null);
+
+      if (receipt.status === 1) {
+        getAccountTokens();
+      } else {
+        console.log("failed");
+      }
+    } catch (err) {
+      setHash(null);
+      setProcessing(false);
+      setAmountToSend(null);
+      setSendToAddress(null);
+    }
+  }
 }
 export default ViewWalletPage;
