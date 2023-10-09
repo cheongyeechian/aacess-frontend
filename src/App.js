@@ -22,20 +22,8 @@ function App() {
           value={selectedChain}
           options={[
             {
-              label: "Mantle",
-              value: "0x1389",
-            },
-            {
               label: "Polygon Mumbai Testnet",
               value: "0x13881",
-            },
-            {
-              label: "Polygon zkEVM Testnet",
-              value: "0x5a2",
-            },
-            {
-              label: "Scroll Testnet",
-              value: "0x8274f",
             },
           ]}
           className="dropdown"
